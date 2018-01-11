@@ -1,0 +1,12 @@
+#!/bin/sh
+
+FN=$(basename "$@")
+SAVE_FN="${HOME}/Downloads/${FN}"
+cp "$@" "${SAVE_FN}"
+
+if [ "$(uname)" = "Darwin" ]; then
+   open "${SAVE_FN}"
+elif [ "$(uname)" = "Linux" ]; then
+   # #depends xdg-open
+   gnome-open "${SAVE_FN}"
+fi

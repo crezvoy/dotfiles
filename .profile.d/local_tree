@@ -1,0 +1,21 @@
+#!/bin/sh
+
+export HOME_ROOT="$HOME/local"
+
+# perl
+export PERL_MM_OPT="INSTALL_BASE=\"$HOME_ROOT\""
+export PERL_LOCAL_LIB_ROOT="$HOME_ROOT"
+export PERL_MB_OPT="--install_base \"$HOME_ROOT\""
+export PERL5LIB="$HOME_ROOT/lib/perl5/x86_64-linux-gnu-thread-multi:$HOME_ROOT/lib/perl5"
+# python
+export PYTHONUSERBASE="$HOME_ROOT"
+# go
+export GOPATH="$HOME_ROOT"
+# npm
+export NPM_ROOT="$HOME_ROOT"
+# rust
+CARGO_HOME="$HOME_ROOT/share/stow"
+
+
+export PATH="$HOME_ROOT/bin:$PATH"
+

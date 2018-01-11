@@ -1,0 +1,7 @@
+*.sublime-*
+.DS_Store
+tags
+.clang
+.clang_complete
+build
+release_build

@@ -1,0 +1,187 @@
+{
+    "last_run_data_local": {
+        "C++.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/C++.sublime-settings", 
+            "version": 1447768897.0
+        }, 
+        "Color Highlighter/themes/Material-Theme.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Color Highlighter/themes/Material-Theme.tmTheme", 
+            "version": 1447776248.0
+        }, 
+        "Color Highlighter/themes/Monokai (Colorcoded).tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Color Highlighter/themes/Monokai (Colorcoded).tmTheme", 
+            "version": 1447688056.0
+        }, 
+        "Color Highlighter/themes/Monokai.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Color Highlighter/themes/Monokai.tmTheme", 
+            "version": 1447765220.0
+        }, 
+        "Color Highlighter/themes/base16-eighties.dark.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Color Highlighter/themes/base16-eighties.dark.tmTheme", 
+            "version": 1447688503.0
+        }, 
+        "Color Highlighter/themes/base16-ocean.dark.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Color Highlighter/themes/base16-ocean.dark.tmTheme", 
+            "version": 1447688276.0
+        }, 
+        "Color Highlighter/themes/base16-ocean.light.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Color Highlighter/themes/base16-ocean.light.tmTheme", 
+            "version": 1447765760.0
+        }, 
+        "Default (Linux).sublime-keymap": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap", 
+            "version": 1447604756.2188153
+        }, 
+        "Default (OSX).sublime-keymap": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Default (OSX).sublime-keymap", 
+            "version": 1447764116.0
+        }, 
+        "Default.sublime-keymap": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Default.sublime-keymap", 
+            "version": 1447752561.0
+        }, 
+        "Evernote.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Evernote.sublime-settings", 
+            "version": 1447752561.0
+        }, 
+        "GoSublime-aux.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/GoSublime-aux.sublime-settings", 
+            "version": 1447749676.0
+        }, 
+        "GoSublime.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/GoSublime.sublime-settings", 
+            "version": 1447752561.0
+        }, 
+        "GoSublime/linux-x64/log.txt": {
+            "dir": "GoSublime/linux-x64", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/GoSublime/linux-x64/log.txt", 
+            "version": 1447628007.2848587
+        }, 
+        "JSON.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/JSON.sublime-settings", 
+            "version": 1447763832.0
+        }, 
+        "Package Control.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Package Control.sublime-settings", 
+            "version": 1447777784.0
+        }, 
+        "Preferences.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/Preferences.sublime-settings", 
+            "version": 1447779354.0
+        }, 
+        "SearchInProject.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/.config/sublime-text-3/Packages/User/SearchInProject.sublime-settings", 
+            "version": 1447769420.0
+        }
+    }, 
+    "last_run_data_remote": {
+        "C++.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/C++.sublime-settings", 
+            "version": 1447768897.0
+        }, 
+        "Color Highlighter/themes/Material-Theme.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/share/rclone/sublime/Color Highlighter/themes/Material-Theme.tmTheme", 
+            "version": 1447776248.0
+        }, 
+        "Color Highlighter/themes/Monokai (Colorcoded).tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/share/rclone/sublime/Color Highlighter/themes/Monokai (Colorcoded).tmTheme", 
+            "version": 1447688056.0
+        }, 
+        "Color Highlighter/themes/Monokai.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/share/rclone/sublime/Color Highlighter/themes/Monokai.tmTheme", 
+            "version": 1447765220.0
+        }, 
+        "Color Highlighter/themes/base16-eighties.dark.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/share/rclone/sublime/Color Highlighter/themes/base16-eighties.dark.tmTheme", 
+            "version": 1447688503.0
+        }, 
+        "Color Highlighter/themes/base16-ocean.dark.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/share/rclone/sublime/Color Highlighter/themes/base16-ocean.dark.tmTheme", 
+            "version": 1447688276.0
+        }, 
+        "Color Highlighter/themes/base16-ocean.light.tmTheme": {
+            "dir": "Color Highlighter/themes", 
+            "path": "/home/clement/share/rclone/sublime/Color Highlighter/themes/base16-ocean.light.tmTheme", 
+            "version": 1447765760.0
+        }, 
+        "Default (Linux).sublime-keymap": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/Default (Linux).sublime-keymap", 
+            "version": 1447604756.2188153
+        }, 
+        "Default (OSX).sublime-keymap": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/Default (OSX).sublime-keymap", 
+            "version": 1447764116.0
+        }, 
+        "Default.sublime-keymap": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/Default.sublime-keymap", 
+            "version": 1447752561.0
+        }, 
+        "Evernote.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/Evernote.sublime-settings", 
+            "version": 1447752561.0
+        }, 
+        "GoSublime-aux.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/GoSublime-aux.sublime-settings", 
+            "version": 1447749676.0
+        }, 
+        "GoSublime.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/GoSublime.sublime-settings", 
+            "version": 1447752561.0
+        }, 
+        "GoSublime/linux-x64/log.txt": {
+            "dir": "GoSublime/linux-x64", 
+            "path": "/home/clement/share/rclone/sublime/GoSublime/linux-x64/log.txt", 
+            "version": 1447628007.2848587
+        }, 
+        "JSON.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/JSON.sublime-settings", 
+            "version": 1447763832.0
+        }, 
+        "Package Control.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/Package Control.sublime-settings", 
+            "version": 1447777784.0
+        }, 
+        "Preferences.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/Preferences.sublime-settings", 
+            "version": 1447779354.0
+        }, 
+        "SearchInProject.sublime-settings": {
+            "dir": "", 
+            "path": "/home/clement/share/rclone/sublime/SearchInProject.sublime-settings", 
+            "version": 1447769420.0
+        }
+    }, 
+    "packages_to_remove": []
+}

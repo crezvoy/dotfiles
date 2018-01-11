@@ -1,0 +1,62 @@
+{
+	"always_show_minimap_viewport": true,
+	"auto_complete": false,
+	"auto_indent": true,
+	"binary_file_patterns":
+	[
+		"*.dds",
+		"*.eot",
+		"*.gif",
+		"*.ico",
+		"*.jar",
+		"*.jpeg",
+		"*.jpg",
+		"*.pdf",
+		"*.png",
+		"*.swf",
+		"*.tga",
+		"*.ttf",
+		"*.zip",
+		"build/**"
+	],
+	"bold_folder_labels": true,
+	"caret_style": "smooth",
+	"color_scheme": "Packages/User/SublimeLinter/Sixteen (SL).tmTheme",
+	"ensure_newline_at_eof_on_save": true,
+	"fade_fold_buttons": true,
+	"findreplace_small": true,
+	"font_size": 12,
+	"highlight_line": false,
+	"highlight_modified_tabs": true,
+	"ignored_packages":
+	[
+		"Markdown",
+		"Six",
+		"Vintage",
+		"Vintageous"
+	],
+	"indent_guide_options":
+	[
+		"draw_normal",
+		"draw_active"
+	],
+	"line_padding_bottom": 3,
+	"line_padding_top": 3,
+	"match_bracket_angle": false,
+	"overlay_scroll_bars": "enabled",
+	"smart_indent": true,
+	"spell_check": true,
+	"tab_completion": true,
+	"theme": "Adaptive.sublime-theme",
+	"trim_automatic_white_space": true,
+	"vintageous_autoindent": true,
+	"vintageous_enable_cmdline_mode": true,
+	"vintageous_hlsearch": true,
+	"vintageous_ignorecase": false,
+	"vintageous_incsearch": true,
+	"vintageous_magic": false,
+	"vintageous_reset_mode_when_switching_tabs": true,
+	"vintageous_use_ctrl_keys": true,
+	"vintageous_use_sys_clipboard": true,
+	"word_wrap": true
+}

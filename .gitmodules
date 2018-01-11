@@ -1,0 +1,3 @@
+[submodule "local/src/liquidprompt"]
+	path = local/src/liquidprompt
+	url = https://github.com/nojhan/liquidprompt.git

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+if [ x$# = x0 ]; then
+	ssh-add
+fi
+
+FILE_RSA="${HOME}/.ssh/id_rsa.$1"
+FILE_DSA="${HOME}/.ssh/id_rsa.$1"
+if [ -e "${FILE_RSA}" ]; then
+	ssh-add "${FILE_RSA}"
+elif [ -e "${FILE_DSA}" ]; then
+	ssh-add "${FILE_DSA}"
+fi

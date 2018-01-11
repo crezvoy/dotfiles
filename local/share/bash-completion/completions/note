@@ -1,0 +1,120 @@
+#!/bin/bash
+
+_note_list_current_tags () {
+	local tags=""
+	local prev=""
+	local cur=""
+	local i=1
+	while [ $i -lt $COMP_CWORD ]; do
+		cur=${COMP_WORDS[$i]}
+		if [ "$prev" = "-t" -a ! -z "$cur" ]; then
+			tags+="-t $cur "
+		fi
+		prev="$cur"
+		((i++))
+	done
+	echo $tags
+}
+
+_note_get_all_tag_tokens () {
+	note tags
+}
+
+_note_get_tag_tokens () {
+	local IFS=$' \t\n'
+	local current_tags=$(_note_list_current_tags) 
+	note tags $current_tags
+}
+
+_note_get_note_tokens () {
+	local IFS=$' \t\n'
+	local current_tags=$(_note_list_current_tags) 
+	note list $current_tags
+}
+
+_note () {
+	local IFS=$'\n'
+	COMPREPLY=()
+	local cur=${COMP_WORDS[COMP_CWORD]}
+
+	# local tags=$(_note_list_current_tags)
+	local TOKEN=""
+	if [ "$COMP_CWORD" = "1" ]; then
+		COMPREPLY=( $(compgen -W "$(note list-actions)" -- "$cur") )
+		COMPREPLY+=( $(compgen -W "$(_note_get_note_tokens)" -- "$cur") )
+	else
+		local action=${COMP_WORDS[1]}
+		local prev=${COMP_WORDS[$((COMP_CWORD - 1))]}
+		local pprev=${COMP_WORDS[$((COMP_CWORD - 2))]}
+		case $action in
+			e|edit)
+				if [ x$prev = x-t ]; then
+					COMPREPLY=( $(compgen -W "$(_note_get_tag_tokens)" -- "$cur") )
+				else
+					COMPREPLY=( $(compgen -W "-t" -- "$cur") )
+					COMPREPLY+=( $(compgen -W "$(_note_get_note_tokens)" -- "$cur") )
+				fi
+			;;
+			l|list)
+				if [ x$prev = x-t ]; then
+					COMPREPLY=( $(compgen -W "$(_note_get_tag_tokens)" -- "$cur") )
+				else
+					COMPREPLY=( $(compgen -W "-t" -- "$cur") )
+				fi
+			;;
+			d|delete)
+				if [ x$prev = x-t ]; then
+					COMPREPLY=( $(compgen -W "$(_note_get_tag_tokens)" -- "$cur") )
+				else
+					COMPREPLY=( $(compgen -W "-t" -- "$cur") )
+					COMPREPLY+=( $(compgen -W "$(_note_get_note_tokens)" -- "$cur") )
+				fi
+			;;
+			f|find)
+				local HAS_T=0
+				for t in "${COMP_WORDS[@]}"; do
+					if [ x$prev = x-T ]; then
+						HAS_T=1
+					fi
+				done
+				if [ x$prev = x-t ]; then
+					TOKEN+=" $(_note_get_tag_tokens)"
+				else
+					TOKEN+=" -t"
+					if [ HAS_T = 0 ]; then
+						TOKEN+=" -T"	
+					fi
+				fi
+			;;
+			s|show)
+				if [ x$prev = x-t ]; then
+					COMPREPLY=( $(compgen -W "$(_note_get_tag_tokens)" -- "$cur") )
+				else
+					COMPREPLY=( $(compgen -W "-t" -- "$cur") )
+					COMPREPLY+=( $(compgen -W "$(_note_get_note_tokens)" -- "$cur") )
+				fi
+			;;
+			t|tag)
+				if [ x$prev = x-t ]; then
+					TOKEN+="$(_note_get_all_tag_tokens)"
+				elif [[ $pprev =~ "-*" ]]; then
+					TOKEN+="-t $(note list)"
+				fi
+			;;
+			lt|tags)
+				if [ x$prev = x-t ]; then
+					TOKEN+="$(_note_get_tag_tokens)"
+				fi
+			;;
+			s|sync)
+			;;
+		esac
+	fi 
+	local i=0
+	for entry in ${COMPREPLY[*]}; do
+		COMPREPLY[$i]="${entry// /\\ }"
+		(( i++ ))
+	done
+}
+
+complete -F _note note

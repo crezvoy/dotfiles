@@ -1,0 +1,14 @@
+#!/bin/bash
+
+tty_="$(tty)"
+if [ "$tty_" != "not a tty" ]; then
+	export GPG_TTY="$tty_"
+	gpg-connect-agent updatestartuptty /bye >/dev/null
+fi
+
+# sometimes get overwritten by /etc/bashrc
+export SSH_AUTH_SOCK="$(gpgconf --list-dir agent-ssh-socket)"
+# # Set GPG TTY
+# export GPG_TTY="$(tty)"
+# 
+# # Refresh gpg-agent tty in case user switches into an X session

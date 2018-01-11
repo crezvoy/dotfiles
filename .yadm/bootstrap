@@ -1,0 +1,163 @@
+#!/bin/bash
+
+cd "$HOME"
+
+if [ -n "$PRETEND" ]; then
+	ECHO=echo
+fi
+
+die () {
+	echo "$1" >&2
+	exit 1
+}
+
+system_name () {
+	local unam="$(uname)" 
+	if [ "$unam" = "Darwin" ]; then
+		echo "macos"
+	elif [ "$unam" = "Linux" ]; then
+		if [ -f /etc/redhat-release ]; then
+			echo "redhat"	
+		elif [ -f /etc/SuSE-release ]; then
+			echo "suse"
+		elif [ -f /etc/debian_version ]; then
+			echo "debian"
+		fi
+	else
+		echo "unknown_system"
+	fi
+}
+
+make_dir () {
+	[ "$1" ] || $ECHO mkdir "$1"
+}
+
+is_macos () {
+	[ "$(system_name)" = "macos" ]
+}
+
+is_debian () {
+	[ "$(system_name)" = "debian" ]
+}
+
+install_package_manager () {
+	if is_macos; then
+		echo "Installing homebrew"
+		$ECHO /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || die "failed installing homebrew"
+	fi
+}
+
+translate_package () {
+	if is_macos; then
+		case "$1" in
+			build-essential)
+				echo "" ;;
+			mutt)
+				echo "neomutt --with-notmuch-patch" ;;
+			*)
+				echo "$1" ;;
+		esac
+	elif is_debian; then
+		case "$1" in
+			vim)
+				echo "vim-nox" ;;
+			ag)
+				echo "sivlersearcher-ag" ;;
+			*)
+				echo "$1" ;;
+		esac
+	else
+		echo "unsupported system"
+	fi
+}
+
+install_package () {
+	local pkg="$(translate_package "$1")"
+	if [ -z "$pkg" ]; then
+		return
+	fi
+	local pkg_name="$(echo "$pkg" | awk '{print $pkg_cmd}')"
+	if is_macos; then
+		$ECHO brew install $pkg
+	elif is_debian; then
+		echo $pkg
+		$ECHO sudo apt-get install $pkg
+	else
+		echo $pkg
+		die "Unsupported system"
+	fi
+}
+
+update_packages () {
+	if is_macos; then
+		$ECHO brew update
+	elif is_debian; then
+		$ECHO sudo apt-get update 
+	else
+		die "Unsupported system"
+	fi
+}
+
+upgrade_packages () {
+	if is_macos; then
+		$ECHO brew upgrade
+	elif is_debian; then
+		$ECHO sudo apt-get upgrade 
+	else
+		die "Unsupported system"
+	fi
+
+}
+
+list_depends () {
+	while read f; do
+		grep '#depends' "$f" | awk '{print $NF }'
+	done < <(yadm ls-files) 2>/dev/null
+}
+
+fix_templates() {
+	local tpl_folder="$1"
+	local target="$2"
+	make_dir "$target"
+	while read f; do
+		[ "$f" = "." ] && continue
+		[ "$f" = ".." ] && continue
+		[ "$f" = ".git" ] && continue
+		if [ -d "$tpl_folder/$f" ]; then 
+			fix_templates "$tpl_folder/$f" "$target/$f"
+		else
+			sed -e "s,~,$HOME,g" <"$tpl_folder/$f" >"$target/$f"
+		fi
+	done < <(ls -a "$tpl_folder")
+}
+
+install_package_manager
+echo "Prerequisites"
+# #depends pass
+
+for pkg in $(list_depends | sort -u) ; do
+	install_package $pkg
+done
+
+echo "Submodules"
+$ECHO yadm submodule update --recursive --init
+
+cd $HOME/local/src/stash
+$ECHO make install PREFIX=$HOME/local/stash/stash
+cd -
+
+$ECHO curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+if command -v vim >/dev/null 2>&1; then
+ $ECHO vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
+fi
+
+[ -d $HOME/local/etc/priv ] || die "missing priv component"
+
+make_dir "$HOME/.cache"
+make_dir "$HOME/.cache/mutt/tmp"
+make_dir "$HOME/.cache/mutt/cache"
+make_dir "$HOME/.cache/goobook"
+
+[ -d "$HOME/local/etc/tpl" ] && $ECHO fix_templates "$HOME/local/etc/tpl" "$HOME"
+[ -d "$HOME/local/etc/priv" ] && $ECHO fix_templates "$HOME/local/etc/priv" "$HOME"

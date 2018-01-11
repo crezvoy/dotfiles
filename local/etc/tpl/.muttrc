@@ -1,0 +1,151 @@
+#vim: ft=muttrc:
+# #depends mutt
+
+# Common paths
+set mailcap_path = ~/.mutt.d/mailcap
+set tmpdir = ~/.cache/mutt/tmp
+set certificate_file= ~/.cache/mutt/certs
+set header_cache = ~/.cache/mutt/headers            
+set message_cachedir = ~/.cache/mutt/bodies         
+set certificate_file = ~/.cache/mutt/certificates
+
+#Common options 
+set confirmappend=no # no user input on append
+set confirmcreate=no # no user input on append
+set delete=yes #no user confirm when deleting messages
+set beep_new=yes
+
+# Index options
+set date_format = "%d/%m/%y"
+set index_format = "[%Z]  %D  %-20.20F  %s"
+
+# tag format for %g
+tag-transforms \
+	"inbox"  "⤓" \
+	"sent"  "↷" \
+	"new" "✉" \
+	"draft" "d" \
+	"from-me" "⟳" \
+	"reply" "↪" \
+	"action" "!" \
+	"waiting" "⋯" \
+	"trash" "∅" \
+	"personal" "⌂" \
+	"work" "w" \
+	"archive" "≡"
+
+# like gmail
+set sort=threads
+set strict_threads=yes
+set sort_browser='reverse-date'
+set sort_aux='last-date-received'
+# don't collapse on an unread message
+set uncollapse_jump=yes
+set collapse_unread=no # don't collapse thread with unread messages 
+# thread based on regex
+set sort_re=yes
+set reply_regexp="^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
+
+#sidebar
+#set sidebar_visible=yes
+set sidebar_width=30
+set sidebar_divider_char="|"
+# set sidebar_sort=yes
+# set sidebar_shortpath=yes
+# set sidebar_folderindent=yes
+macro index b '<enter-command>toggle sidebar_visible<enter>'
+macro pager b '<enter-command>toggle sidebar_visible<enter>'
+ 
+# Pager
+# Number of index lines to show
+set pager_index_lines=10
+# Number of context lines to show
+set pager_context=3
+# Don't go to next message automatically
+set pager_stop=yes
+# Scroll in menus
+set menu_scroll=yes
+# Show tildes like in vim
+set tilde=no
+# No plus signs on wrapping
+set markers=no
+set edit_headers=yes
+set envelope_from=yes
+# no dashes before sig
+set sig_dashes=no
+# do not ask for subject or to for reply
+set fast_reply=yes
+set reply_to=yes
+# go to send menu first
+set autoedit=yes
+set visual="vim +/^$ ++1"
+set editor="$visual"
+set text_flowed=yes
+# set charset="utf-8:iso-8859-1:us-ascii"
+# set send_charset="utf-8:iso-8859-1:us-ascii"
+charset-hook US-ASCII     ISO-8859-1
+charset-hook x-unknown    ISO-8859-1
+charset-hook windows-1250 CP1250
+charset-hook windows-1251 CP1251
+charset-hook windows-1252 CP1252
+charset-hook windows-1253 CP1253
+charset-hook windows-1254 CP1254
+charset-hook windows-1255 CP1255
+charset-hook windows-1256 CP1256
+charset-hook windows-1257 CP1257
+charset-hook windows-1258 CP1258
+set fcc_attach=yes
+# Removes me from list when replying
+set reply_self=no
+# Forward attachments as part of body
+set mime_forward=no
+# Format for subject when forwarding
+set forward_format = "Fwd: %s"
+# Decode when forwarding
+set forward_decode=yes
+set mime_forward=yes
+set mime_forward_rest=yes
+# Attribution quoted email
+set attribution="On %D, %n <%a>:"
+# Reply as whomever it was to
+set reverse_name=yes
+set include=yes
+set forward_quote=yes
+set rfc2047_parameters=yes
+set markers=no
+set implicit_autoview=yes
+set duplicate_threads = yes
+auto_view text/html text/enriched application/x-gunzip application/postscript image/gif application/x-tar-gz
+# Statusbar
+set status_chars =" *%A"
+set status_format="───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+# Headers
+ignore headers *
+unignore headers From To Cc Date Subject Message-Id
+unhdr_order *
+hdr_order From To Cc Date Subject Message-Id
+set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+alternative_order text/plain text/enriched text/html 
+
+set arrow_cursor
+
+set nm_default_uri = notmuch://~/Mail
+set nm_unread_tag = unread
+set nm_query_type = threads
+# set virtual_spoolfile = yes
+
+#set mbox_type=Maildir
+source ~/.mutt.d/personal.account
+macro index 1 '<sync-mailbox><enter-command>source ~/.mutt.d/personal.account<enter><change-folder>!<enter>'
+macro index 2 '<sync-mailbox><enter-command>source ~/.mutt.d/work.account<enter><change-folder>!<enter>'
+
+source ~/.mutt.d/solarized.colors
+source ~/.mutt.d/shortcuts
+
+set timeout = 10
+timeout-hook 'sh offlineimap -o -u quiet'
+startup-hook 'sh offlineimap -o -u quiet'
+shutdown-hook 'sh offlineimap -o -u quiet'
+
+# source local config if any
+source `FILE=$HOME/.mutt.local; if [ ! -s "$FILE" ]; then FILE=/dev/null;fi;echo "$FILE"`

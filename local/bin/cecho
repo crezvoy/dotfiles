@@ -1,0 +1,67 @@
+#!/bin/bash
+
+NO_NEW_LINE="NO"
+BACKGROUND=""
+FOREGROUND=""
+MODE=""
+MESSAGE=""
+while (( $# )); do
+	case "${1:0:2}" in
+		-n)NO_NEW_LINE="YES";;
+		-b)BACKGROUND=${1:2};;
+		-f)FOREGROUND=${1:2};;
+		-m)MODE=${1:2};;
+		*)MESSAGE=${1};;
+	esac
+	shift
+done
+
+COLOR="\\033["
+case "${MODE}" in 
+	normal) COLOR=${COLOR}"0";;
+	bold) COLOR=${COLOR}"1";;
+	light) COLOR=${COLOR}"1";;
+	underline) COLOR=${COLOR}"4";;
+	blink) COLOR=${COLOR}"5";;
+	inverse) COLOR=${COLOR}"7";;
+	*) COLOR=${COLOR}"0";;
+esac
+
+case "${FOREGROUND}" in
+	black) COLOR=${COLOR}";30";;
+	red) COLOR=${COLOR}";31";;
+	green) COLOR=${COLOR}";32";;
+	yellow) COLOR=${COLOR}";33";;
+	brown) COLOR=${COLOR}";33";;
+	blue) COLOR=${COLOR}";34";;
+	purple) COLOR=${COLOR}";35";;
+	cyan) COLOR=${COLOR}";36";;
+	white) COLOR=${COLOR}";37";;
+	*) COLOR=${COLOR};; #"0;";;
+esac
+
+case "${BACKGROUND}" in
+	black) COLOR=${COLOR}";40";;
+	red) COLOR=${COLOR}";41";;
+	green) COLOR=${COLOR}";42";;
+	yellow) COLOR=${COLOR}";43";;
+	brown) COLOR=${COLOR}";43";;
+	blue) COLOR=${COLOR}";44";;
+	purple) COLOR=${COLOR}";45";;
+	cyan) COLOR=${COLOR}";46";;
+	white) COLOR=${COLOR}";47";;
+	*) COLOR=${COLOR};; #"0;";;
+esac
+
+COLOR=${COLOR}"m"
+if [ ! -t 1 ]; then
+	COLOR=""
+fi
+
+if [ "$NO_NEW_LINE" = "YES" ]; then
+	echo -en "${COLOR}${MESSAGE}"
+else
+	echo -e "${COLOR}${MESSAGE}"
+fi
+
+tput sgr0

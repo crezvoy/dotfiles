@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# #depends pandoc
+pandoc -s -f markdown -t man "$@" | man -P cat /dev/stdin

@@ -1,0 +1,14 @@
+{
+    // "osx": {
+    //     "PATH": "/Users/jsmith/go/bin",
+    //     "GOPATH": "/Users/jsmith/go"
+    // },
+    // "windows": {
+    //     "PATH": "C:\\Users\\jsmith\\go\\bin",
+    //     "GOPATH": "C:\\Users\\jsmith\\go"
+    // },
+    // "linux": {
+    //     "PATH": "/home/jsmith/go/bin",
+    //     "GOPATH": "/home/jsmith/go"
+    // },
+}

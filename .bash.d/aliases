@@ -1,0 +1,85 @@
+#!/bin/bash
+
+alias e="${EDITOR}"
+alias E="sudo -E ${EDITOR}"
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+#alias dir='dir --color=auto'
+#alias vdir='vdir --color=auto'
+
+LS_COLOR="--color=auto"
+if [ x$(uname) = xDarwin ]; then
+	LS_COLOR="-G"
+fi
+
+alias ls="ls $LS_COLOR"
+alias grep="grep $LS_COLOR"
+alias fgrep="fgrep $LS_COLOR"
+alias egrep="egrep $LS_COLOR"
+
+if [ "$(uname)" = "Linux" ]; then
+	alias open="xdg-open"
+fi
+
+if [ "$(uname)" = "Darwin" ]; then
+	alias open="open"
+fi
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+long() {
+	"$@"
+	alert "$1" "Completed with status $?"
+}
+
+alias dfh="df -Tha --total"
+
+alias duh="du -ach | sort -h"
+
+extract() {
+	if [ -z "$1" ]; then
+		echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+		echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+		return 1
+	else
+		for n in $@; do
+			if [ -f "$n" ] ; then
+				case "${n%,}" in
+					*.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar) 
+						tar xvf "$n" ;;
+					*.lzma)
+						unlzma ./"$n" ;;
+					*.bz2)
+				 		bunzip2 ./"$n" ;;
+					*.rar)
+						unrar x -ad ./"$n" ;;
+					*.gz)
+						gunzip ./"$n" ;;
+					*.zip)
+						unzip ./"$n" ;;
+					*.z)
+						uncompress ./"$n" ;;
+					*.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
+						7z x ./"$n" ;;
+					*.xz)
+						unxz ./"$n" ;;
+					*.exe)
+						cabextract ./"$n" ;;
+					*)
+						echo "extract: '$n' - unknown archive method"
+						return 1 ;;
+				esac
+			else
+				echo "'$n' - file does not exist"
+				return 1
+			fi
+		done
+	fi
+}
+
+alias lstow="stash --stash $HOME/local/stash -t $HOME/local"
+alias cstow="stash -d $HOME/local/etc/stow -t $HOME"

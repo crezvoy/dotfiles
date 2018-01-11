@@ -1,0 +1,569 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Cwd;
+use File::Copy qw/move/;
+use File::Spec;
+use File::Basename qw/fileparse/;
+use Env qw/$HOME $EDITOR/;
+use POSIX qw/strftime locale_h/;
+use locale;
+use Data::Dumper;
+use Term::ANSIColor 2.00 qw/:constants/;
+use List::Util qw/uniq/;
+
+use constant {
+	NOTE_DIR => "$HOME/Notes",
+	NOTE_EDITOR => "$EDITOR"
+};
+
+sub arg_to_title {
+	my $title = join " ", @_;
+	$title =~ tr/ +/ /;
+	return $title;
+}
+
+sub get_note_file {
+	my $title = shift;
+	return File::Spec->catfile(NOTE_DIR, $title . ".md");
+}
+
+sub read_header {
+	my $fh = shift;
+	my $header = "";
+	my $nr_sep = 0;
+	while (<$fh>) {
+		if (/^---\s*$/) {
+			$nr_sep++;
+		} else {
+			$header .= $_ if($nr_sep == 1);
+		}
+		last if ($nr_sep == 2);
+	}
+	return $header;
+}
+
+sub open_read_header {
+	my $file = shift;
+	open my $fh, "<$file" or die "Failed opening $file for reading.";
+	my $ret = read_header($fh);
+	close $fh;
+	return $ret;
+}
+
+sub read_content {
+	my $fh = shift;
+	my $content = "";
+	my $nr_sep = 0;
+	while (<$fh>) {
+		$nr_sep++ if /^---\s*$/;
+		last if ($nr_sep == 2);
+	}
+	$content .= $_ while (<$fh>);
+	return $content;
+}
+
+sub open_read_content {
+	my $file = shift;
+	open my $fh, "<$file" or die "Failed opening $file for reading.";
+	my $ret = read_content($fh);
+	close $fh;
+	return $ret;
+}
+
+sub get_field {
+	my $field = shift;
+	local $_ = shift;
+	return $1 if (m/^$field[ \t]*:[ \t]+(.*?)[ \t]*$/m);
+	return "";
+}
+
+sub set_field {
+	my $field = shift;
+	my $value = shift;
+	my @hlines = split "\n+", shift;
+	foreach (@hlines) {
+		if (/\s*$field\s*:/) {
+			s/(\s*$field\s*:\s*)(.*?)(\s*)/$1$value$3/g;
+			return join "\n", @hlines;
+		}
+	}
+	push @hlines, "$field: $value";
+	return join "\n", @hlines;
+}
+
+sub get_unique_title {
+	my $title = shift;
+	my $orig_title = $title;
+	$orig_title =~ s/(.*)(?:\s*\(\s*[0-9]+\s*\))?/$1/;
+	my $filename = get_note_file($orig_title);
+	my $cnt = 0;
+	while (-e $filename) {
+		++$cnt;
+		$title = "$orig_title ($cnt)";
+		$filename = get_note_file($title);
+	}
+	return $title;
+}
+
+sub replace_header {
+	my $file = shift;
+	my $header = shift;
+	my $content = open_read_content($file);
+	open my $fh, ">$file";
+	print $fh, "---\n";
+	print $fh, $header;
+	print $fh, "---\n";
+	print $fh, $content;
+	close $fh;
+}
+
+sub post_edit_sync {
+	my $file = shift;
+    my($outter_title, $dirs, $suffix) = fileparse($file, ".md");
+    my $header = open_read_header($file);
+	my $inner_title = get_field("title", $header);
+	$inner_title =~ s/\s+/ /g;
+	my $date = strftime "%F %T%z", localtime;
+	if ($outter_title ne $inner_title) {
+		my $new_title = get_unique_title($inner_title);
+		if (! $inner_title eq $new_title) {
+			$header = set_field("title", $new_title, $header);
+			$header = set_field("last-edit", $date, $header);
+			replace_header($file, $header);
+		}
+		move($file, get_note_file($new_title));
+		print "Note renamed: $new_title\n";
+	}
+}
+
+sub unindent {
+	local $_ = shift;
+	s/\A\s*\n//m;
+	s/\s*\Z/\n/m;
+	s/^$1//gm if (m/\A(\s*).*\n(^\1.*\n?)*$/m);
+	return $_;
+}
+
+sub edit_note {
+	my @tags;
+	my @inputs;
+	my $quiet = 0;
+	my @contents;
+
+	while (@_ && "$_[0]" =~ /^-.*/) {
+		local $_ = shift;
+		if (m/^-(t|-tag)$/) {
+			push @tags, shift;
+		} elsif (m/^-(i|-input)$/) {
+			push @inputs, shift;
+		} elsif (m/^-(q|-quiet)$/) {
+			$quiet = 1;
+		} elsif (m/^-(c|-content)$/) {
+			@contents = shift;
+		} else {
+			die "unknown argument: \"$_\"";
+		}
+	}
+	my $tag_list = join  " ", @tags;
+	my $title = arg_to_title(@_);
+	my $file = get_note_file($title);
+	my $author = qx/whoami/;
+	chomp $author;
+	my $date = strftime "%F %T%z", localtime;
+	if (! -e $file) {
+		unshift @contents, unindent qq {
+			---
+			title: $title
+			author: $author
+			date: $date
+			tags: $tag_list
+			---
+		};
+	}
+	open my $fhout, ">>$file" or die "failed opening \"$file\" for writing";
+	print $fhout "$_\n" foreach (@contents);
+	foreach (@inputs) {
+		if (m/^-$/) {
+			print $fhout while <STDIN>;
+		} else {
+			open my $fhin, "<$_" or die "failed opening \"$_\" for reading";
+			print $fhout while <$fhin>;
+			close $fhin;
+		}
+		print $fhout "\n";
+	}
+	close $fhout;
+	system("vim '+ normal G \$' '$file'") if (!$quiet);
+	if (open_read_content($file) =~ /\As*\Z/ms) {
+		print "Empty note, discarding\n";
+		unlink $file;
+	} else {
+		post_edit_sync($file);
+	}
+}
+
+sub search_notes {
+	my %matching_notes;
+	my @tags;
+	my $title_only = 0;
+	my %tag_map;
+	my $score = 0;
+
+	while (@_ && "$_[0]" =~ /^-.*/) {
+		local $_ = shift;
+		if (/^-(t|-tag)$/) {
+			push @tags, shift;
+		} elsif (/^-(T|-title-only)/) {
+			$title_only = 1;
+		} else {
+			die "unknown argument: \"$_\"";
+		}
+	}
+	if (@tags and $title_only) {
+		die "--tags and --title-only are not compatible options";
+	}
+	my @search_terms = @_;
+	foreach (@search_terms) {
+		if (length $_ < 3) {
+			$_ = qr/\b$_\b/i;
+			next;
+		}
+		$_ = join '\w{0,2}', split '', $_;
+		$_ = '\w*' . $_ . '\w*';
+		$_ = qr/$_/i;
+	}
+	my $raw_needle = join '|', @search_terms;
+	my $needle = qr/((?:\b|\A)$raw_needle(?:\b|\Z))/mi;
+	map { $tag_map{$_} = 1 } @tags;
+	opendir my $note_dir, NOTE_DIR or die "Failed listing files in " . NOTE_DIR;
+	foreach (readdir $note_dir) {
+		next if (not  m/\.md$/);
+		my $result_title = $_;
+		$result_title =~ s/(.*)\.md/$1/;
+		my $result_tags = "";
+		my $result_content = "";
+		my %matched_terms;
+
+		if ($result_title =~ /$needle/) {
+			$result_title =~ s/$needle/BOLD.YELLOW.$1.RESET.YELLOW/gei;
+			foreach (@search_terms) {
+				$matched_terms{$_} = 1 if $result_title =~ /$_/;
+			}
+		}
+		$result_title = YELLOW.$result_title.RESET;
+		my $note_file = File::Spec->catfile(NOTE_DIR, "$_");
+		my $header = open_read_header($note_file);
+		my @note_tags = split / +/, get_field("tags", $header);
+		my %note_tag_map = map { $_ => 1 } @note_tags;
+		next if scalar keys %tag_map != scalar grep { defined $note_tag_map{$_} } keys %tag_map;
+		$result_tags = join " ", map {
+				if (defined $tag_map{$_}) {
+					$_ = BOLD.GREEN.'@'.$_.RESET;
+				} else {
+					$_ = GREEN.'@'.$_.RESET;
+				}
+			} @note_tags;
+
+		my $not_first_content_match = 0;
+		my $content = open_read_content($note_file);
+		foreach (split /([.?!;]\s|^\s*[-+*]\s+|^#+\s*|```)/ms, $content) {
+			if (/$needle/) {
+				my $sentence = $_;
+				my %sentence_matches;
+				foreach (@search_terms) {
+					if ($sentence =~ /$_/) {
+						print "$result_title: $_\n";
+						$sentence_matches{$_} = 1;
+					}
+
+					#$sentence_matches{$_} = 1 if ($sentence =~ /$_/);
+				}
+				my @keys = keys %sentence_matches;
+				my $key = $keys[0];
+				# if their is only one matching term in the sentence and that one .is
+				# already present in the result, skip.
+				next if (scalar @keys == 1 and exists $matched_terms{$key});
+				%matched_terms = (%matched_terms, %sentence_matches);
+				$sentence =~ s/$needle/ BOLD.$1.RESET /ge;
+				$sentence =~ s/\s+/ /sg;
+				$result_content .= " ... " if ($result_content);
+				$result_content .=  "$sentence";
+			}
+		}
+		if (scalar keys %matched_terms) {
+			# count matches of each terms
+			print "$result_title " . (scalar keys %matched_terms) . "\n";
+			my @note = ($result_title, $result_tags, $result_content);
+			push @{$matching_notes{scalar keys %matched_terms}}, \@note;
+		}
+	}
+	foreach (sort {$b <=> $a} keys %matching_notes) {
+		foreach (@{$matching_notes{$_}}) {
+			print "$_->[0]";
+			if (not $title_only) {
+				print "  $_->[1]\n";
+				print "$_->[2]\n" if ($_->[2]);
+			}
+			print "\n";
+		}
+	}
+}
+
+sub delete_note {
+	my $note_name = shift or die "missing note name parameter for delete_note";
+	my $filename = File::Spec->catfile(NOTE_DIR, "$note_name.md");
+	my $deleted_filename = $filename;
+	$deleted_filename =~ s/\.md$/\.deleted/;
+	move $filename, $deleted_filename;
+}
+
+sub delete_notes {
+	if (@_) {
+		delete_note(join " ", @_);
+	} else {
+		delete_note $_ while (<>);
+	}
+}
+
+sub tag_note {
+	my $tags = shift;
+	my $title = shift;
+	my $filename = File::Spec->catfile(NOTE_DIR, "$title.md");
+	my $header = open_read_header($filename);
+	my @note_tags = split / +/, get_field("tags", $header);
+	@note_tags = (@note_tags, @$tags);
+	@note_tags = uniq sort @note_tags;
+	my $new_tags = join(" ", @note_tags);
+	$header = set_field("tags", $new_tags, $header);
+	replace_header($filename, $header);
+}
+
+sub tag_notes {
+	my @tags;
+	while (@_ && "$_[0]" =~ /^-.*/) {
+		local $_ = shift;
+		if (/^-(t|-tag)$/) {
+			push @tags, shift;
+		} else {
+			die "unknown argument: \"$_\"";
+		}
+	}
+	if (@_) {
+		tag_note(\@tags, join " ", @_);
+	} else {
+		tag_note(\@tags, $_) while(<>);
+	}
+
+}
+
+sub sync_notes {
+	my $wd = getcwd();
+	return if (not -d NOTE_DIR);
+	chdir NOTE_DIR;
+	my @md_files = glob "*.md";
+	my @deleted_files = glob "*.deleted";
+	system "git add -u";
+	system "git add '$_'" foreach(@md_files);
+	system "git add '$_'" foreach(@deleted_files);
+	system "git commit -m 'sync'";
+	system "git fetch";
+	system "git merge -Xtheirs -m 'sync merge'";
+	unlink foreach (@deleted_files);
+	system "git add -u";
+	system "git commit -m 'sync deleted files'";
+	system "git push";
+	chdir $wd;
+}
+
+sub list_notes {
+	my @filter_tags;
+	while (@_ && "$_[0]" =~ /^-.*/) {
+		local $_ = shift;
+		if (/^-(t|-tag)$/) {
+			my $key=shift;
+			push @filter_tags, $key;
+		} else {
+			die "unknown argument: \"$_\"";
+		}
+	}
+	opendir my $note_dir, NOTE_DIR or die "Failed listing files in " . NOTE_DIR;
+	foreach (readdir $note_dir) {
+		next if ! /.+\.md/;
+		my $note=$_;
+		if (@filter_tags) {
+			my $tags_ok = 1;
+			my %note_tags = map { $_ => 1 } split / +/, get_field("tags", open_read_header(File::Spec->catfile(NOTE_DIR, "$note")));
+			foreach (@filter_tags) {
+			    if (not defined $note_tags{$_}) {
+			    	$tags_ok = 0;
+			    	last;
+			    }
+			}
+			next if not $tags_ok;
+		}
+		$note =~ s/(.+)\.md/$1/;
+		print "$note\n";
+	}
+}
+
+sub list_tags {
+	my @result_tags;
+	my %filter_tags;
+	my $quote = 0;
+	while (@_ && "$_[0]" =~ /^-.*/) {
+		local $_ = shift;
+		if (/^-(t|-tag)$/) {
+			my $key=shift;
+			$filter_tags{$key} = 1;
+		} else {
+			die "unknown argument: \"$_\"";
+		}
+	}
+	opendir my $note_dir, NOTE_DIR or die "Failed listing files in " . NOTE_DIR;
+	foreach (readdir $note_dir) {
+		next if ! /.+\.md/;
+		my %note_tags = map { $_ => 1 } split / +/, get_field("tags", open_read_header(File::Spec->catfile(NOTE_DIR, "$_")));
+		my $tags_ok = 1;
+		foreach (keys %filter_tags) {
+			if (not defined $note_tags{$_}) {
+				$tags_ok = 0;
+				last;
+			}
+		}
+		next if not $tags_ok;
+		push @result_tags, keys %note_tags;
+	}
+	@result_tags = grep {not defined $filter_tags{$_}} uniq sort @result_tags;
+	print "$_\n" foreach(@result_tags);
+}
+
+sub list_todos {
+	my @result_tags;
+	my @filter_tags;
+	my $print_done = qr/(?:\s*)/;
+	while (@_ && "$_[0]" =~ /^-.*/) {
+		local $_ = shift;
+		if (/^-(t|-tag)$/) {
+			my $key=shift;
+			push @filter_tags, $key;
+		} elsif (/^-(d|-done)$/) {
+			$print_done = qr/(?:\s*|x)/i;
+		}else {
+			die "unknown argument: \"$_\"";
+		}
+	}
+	opendir my $note_dir, NOTE_DIR or die "Failed listing files in " . NOTE_DIR;
+	foreach (readdir $note_dir) {
+		next if ! /.+\.md/;
+		my $note = $_;
+		my %note_tags = map { $_ => 1 } split / +/, get_field("tags", open_read_header(File::Spec->catfile(NOTE_DIR, "$note")));
+		my $tags_ok = 1;
+		foreach (@filter_tags) {
+			if (not defined $note_tags{$_}) {
+				$tags_ok = 0;
+				last;
+			}
+		}
+		next if not $tags_ok;
+		my $note_content = open_read_content(File::Spec->catfile(NOTE_DIR, "$note"));
+		my @todos;
+		foreach ($note_content =~ /\s*-?\s*(\[$print_done\].*)/g) {
+			push @todos, $_;
+		}
+		$note =~ s/(.+)\.md/$1/;
+		if (@todos) {
+			print BOLD."$note".RESET."\n";
+			print "\t$_\n" foreach (@todos);
+		}
+	}
+}
+
+sub show_note {
+	my $note = join " ", @_;
+	my $note_file = File::Spec->catfile(NOTE_DIR, "$note.md");
+	if ( -e $note_file) {
+		system("mdless '$note_file'");	
+	}
+}
+
+sub jot {
+	my $date = strftime "%F", localtime;	
+	my $old_locale = setlocale(LC_TIME);
+    setlocale(LC_TIME, "C");
+    my $hr_date = strftime "%A %B %d %Y", localtime;	
+    setlocale(LC_TIME, $old_locale);
+	my $time = strftime "%T", localtime;	
+	my $jot_file = File::Spec->catfile(NOTE_DIR, "jots.md");
+	my $content = "";
+	if (@_) {
+		$content = join " ", @_;
+	} else {
+		$content .= $_ while <>; 
+	}
+	my $print_date = 1;
+	my $file_exists = 1 if (-e $jot_file);
+	if ($file_exists) {
+		my $note_content = open_read_content($jot_file);
+		$print_date = ! $note_content =~ /^# $date/m 
+	}
+	my $author = qx/whoami/;
+	open my $fh, ">>$jot_file";
+	if (not $file_exists) {
+		print $fh unindent qq {
+			---
+			title: jots
+			author: $author
+			date: $date $time
+			tags: 
+			---
+		};
+	}
+	if ($print_date) {
+		print $fh "\n# $date $hr_date\n";	
+	}
+	print $fh "\n## $time\n$content\n";		
+	close $fh;
+}
+
+my %actions = (
+	"e" => \&edit_note,
+	"edit" => \&edit_note,
+	"f" => \&search_notes,
+	"find" => \&search_notes,
+	"d" => \&delete_notes,
+	"delete" => \&delete_notes,
+	"y" => \&sync_notes,
+	"sync" => \&sync_notes,
+	"l" => \&list_notes,
+	"list" => \&list_notes,
+	"t" => \&tag_notes,
+	"tag" => \&tag_notes,
+	"lt" => \&list_tags,
+	"tags" => \&list_tags,
+	"s" => \&show_note,
+	"show" => \&show_note,
+	"todos" => \&list_todos,
+	"td" => \&list_todos,
+	"jot" => \&jot,
+	"j" => \&jot,
+	);
+
+my $act = shift;
+
+if (defined $actions{$act}) {
+	$actions{$act}->(@ARGV);
+} elsif ($act eq "list-actions") {
+	print "$_\n" foreach keys %actions;
+} else {
+	unshift @ARGV, $act;
+	my $note = join " ", @ARGV;
+	my $note_file = File::Spec->catfile(NOTE_DIR, "$note.md");
+	if ( -e $note_file ) {
+		show_note $note;
+	} else {
+		edit_note $note;
+	}
+}

@@ -1,0 +1,143 @@
+#!/bin/bash
+
+CODONS[0]="Phe/F"
+CODONS[1]="Phe/F"    
+CODONS[2]="Leu/L"
+CODONS[3]="Leu/L"
+CODONS[4]="Ser/S"
+CODONS[5]="Ser/S"
+CODONS[6]="Ser/S"
+CODONS[7]="Ser/S"
+CODONS[8]="Tyr/Y"
+CODONS[9]="Tyr/Y"
+CODONS[10]="Stop"
+CODONS[11]="Stop"
+CODONS[12]="Cys/C"
+CODONS[13]="Cys/C"
+CODONS[14]="Stop"
+CODONS[15]="Trp/W"
+
+CODONS[16]="Leu/L"
+CODONS[17]="Leu/L"    
+CODONS[18]="Leu/L"
+CODONS[19]="Leu/L"
+CODONS[20]="Pro/P"
+CODONS[21]="Pro/P"
+CODONS[22]="Pro/P"
+CODONS[23]="Pro/P"
+CODONS[24]="His/H"
+CODONS[25]="His/H"
+CODONS[26]="Gln/Q"
+CODONS[27]="Gln/Q"
+CODONS[28]="Arg/R"
+CODONS[29]="Arg/R"
+CODONS[30]="Arg/R"
+CODONS[31]="Arg/R"
+
+CODONS[32]="Ile/I"
+CODONS[33]="Ile/I"    
+CODONS[34]="Ile/I"
+CODONS[35]="Ile/I"
+CODONS[36]="Thr/T"
+CODONS[37]="Thr/T"
+CODONS[38]="Thr/T"
+CODONS[39]="Thr/T"
+CODONS[40]="Asn/N"
+CODONS[41]="Asn/N"
+CODONS[42]="Lys/K"
+CODONS[43]="Lys/K"
+CODONS[44]="Ser/S"
+CODONS[45]="Ser/S"
+CODONS[46]="Arg/R"
+CODONS[47]="Arg/R"
+
+CODONS[48]="Val/V"
+CODONS[49]="Val/V"    
+CODONS[50]="Val/V"
+CODONS[51]="Val/V"
+CODONS[52]="Ala/A"
+CODONS[53]="Ala/A"
+CODONS[54]="Ala/A"
+CODONS[55]="Ala/A"
+CODONS[56]="Asp/D"
+CODONS[57]="Asp/D"
+CODONS[58]="Glu/E"
+CODONS[59]="Glu/E"
+CODONS[60]="Gly/G"
+CODONS[61]="Gly/G"
+CODONS[62]="Gly/G"
+CODONS[63]="Gly/G"
+
+echo -n "        ";
+cecho -n -bblack -fwhite "             2nd            ";
+echo ""
+echo -n "        ";
+cecho -n -bcyan -fwhite "   U   ";cecho -n -bblue -fred "   C   ";cecho -n -bcyan -fyellow "   A   ";cecho -n -bblue -fblack "   G   "; 
+echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan "   "; 
+cecho -n -bblack -mbold -fwhite " Phe/F ";cecho -bblack -n -fwhite " Ser/S ";cecho -bblack -n -mbold -fwhite " Tyr/Y ";cecho -bblack -n -fwhite " Cys/C "; 
+cecho -n -bblack -bcyan -fwhite " U "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan -fwhite " U "; 
+cecho -n -bblack -mbold -fwhite " Phe/F ";cecho -n -bblack -fwhite " Ser/S ";cecho -n -bblack -mbold -fwhite " Tyr/Y ";cecho -n -bblack -fwhite " Cys/C "; 
+cecho -n -bblack -bblue -fred " C ";cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan -fwhite "   "; 
+cecho -n -bblack -mbold -fwhite " Leu/L ";cecho -n -bblack -fwhite " Ser/S ";cecho -n -bblack -mbold -fred " Stop  ";cecho -n -bblack -fred " Stop  "; 
+cecho -n -bblack -bcyan -fyellow " A "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan -fwhite "   "; 
+cecho -n -bblack -mbold -fwhite " Leu/L ";cecho -n -bblack -fwhite " Ser/S ";cecho -n -bblack -mbold -fred " Stop  ";cecho -n -bblack -fwhite " Trp/W "; 
+cecho -n -bblue -fblack " G "; cecho -n -bblack -fwhite "     "; echo ""
+
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue "   "; 
+cecho -n -bblack -fwhite " Leu/L ";cecho -n -bblack -mbold -fwhite " Pro/P ";cecho -n -bblack -fwhite " His/H ";cecho -n -bblack -mbold -fwhite " Arg/R "; 
+cecho -n -bcyan -fwhite " U "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue -fred " C "; 
+cecho -n -bblack -fwhite " Leu/L ";cecho -n -bblack -mbold -fwhite " Pro/P ";cecho -n -bblack -fwhite " His/H ";cecho -n -bblack -mbold -fwhite " Arg/R "; 
+cecho -n -bblue -fred " C ";cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue -fwhite "   "; 
+cecho -n -bblack -fwhite " Leu/L ";cecho -n -bblack -mbold -fwhite " Pro/P ";cecho -n -bblack -fwhite " Gln/G ";cecho -n -bblack -mbold -fwhite " Arg/R "; 
+cecho -n -bcyan -fyellow " A "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue -fwhite "   "; 
+cecho -n -bblack -fwhite " Leu/L ";cecho -n -bblack -mbold -fwhite " Pro/P ";cecho -n -bblack -fwhite " Gln/G ";cecho -n -bblack -mbold -fwhite " Arg/R "; 
+cecho -n -bblue -fblack " G "; cecho -n -bblack -fwhite " 3rd "; echo ""
+
+
+cecho -n -bblack -fwhite " 1st "; cecho -n -bcyan "   "; 
+cecho -n -bblack -mbold -fwhite " Ile/I ";cecho -n -bblack -fwhite " Thr/T ";cecho -n -bblack -mbold -fwhite " Asp/N ";cecho -n -bblack -fwhite " Ser/S "; 
+cecho -n -bblack -bcyan -fwhite " U "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan -fyellow " A "; 
+cecho -n -bblack -mbold -fwhite " Ile/I ";cecho -n -bblack -fwhite " Thr/T ";cecho -n -bblack -mbold -fwhite " Asp/N ";cecho -n -bblack -fwhite " Ser/S "; 
+cecho -n -bblue -fred " C ";cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan -fwhite "   "; 
+cecho -n -bblack -mbold -fwhite " Ile/I ";cecho -n -bblack -fwhite " Thr/T ";cecho -n -bblack -mbold -fwhite " Lys/K ";cecho -n -bblack -fwhite " Arg/R "; 
+cecho -n -bcyan -fyellow " A "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bcyan -fwhite "   "; 
+cecho -n -bblack -mbold -fwhite " Met/M ";cecho -n -bblack -fwhite " Thr/T ";cecho -n -bblack -mbold -fwhite " Lys/K ";cecho -n -bblack -fwhite " Arg/R "; 
+cecho -n -bblue -fblack " G "; cecho -n -bblack -fwhite "     "; echo ""
+
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue "   "; 
+cecho -n -bblack -fwhite " Val/V ";cecho -n -bblack -mbold -fwhite " Ala/A ";cecho -n -bblack -fwhite " Asp/D ";cecho -n -bblack -mbold -fwhite " Gly/G "; 
+cecho -n -bcyan -fwhite " U "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue -fblack " G "; 
+cecho -n -bblack -fwhite " Val/V ";cecho -n -bblack -mbold -fwhite " Ala/A ";cecho -n -bblack -fwhite " Asp/D ";cecho -n -bblack -mbold -fwhite " Gly/G "; 
+cecho -n -bblue -fred " C ";cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue -fwhite "   "; 
+cecho -n -bblack -fwhite " Val/V ";cecho -n -bblack -mbold -fwhite " Ala/A ";cecho -n -bblack -fwhite " Glu/E ";cecho -n -bblack -mbold -fwhite " Gly/G "; 
+cecho -n -bcyan -fyellow " A "; cecho -n -bblack -fwhite "     "; echo ""
+
+cecho -n -bblack -fwhite "     "; cecho -n -bblue -fwhite "   "; 
+cecho -n -bblack -fwhite " Val/V ";cecho -n -bblack -mbold -fwhite " Ala/A ";cecho -n -bblack -fwhite " Glu/E ";cecho -n -bblack -mbold -fwhite " Gly/G "; 
+cecho -n -bblue -fblack " G "; cecho -n -bblack -fwhite "     "; echo ""

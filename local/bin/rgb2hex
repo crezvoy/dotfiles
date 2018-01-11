@@ -1,0 +1,6 @@
+#!/bin/bash
+
+perl -e '(shift @ARGV) =~
+	/\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*/ &&
+	printf "#%02X%02X%02X\n", $1, $2, $3' \
+	"${@}"

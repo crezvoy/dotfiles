@@ -1,0 +1,79 @@
+browser browse
+auto-reload yes
+suppress-first-reload yes
+reload-time 350
+refresh-on-startup yes 
+confirm-exit no
+reload-threads 4
+show-read-feeds  yes
+show-read-articles  yes
+notify-xterm no
+notify-screen yes
+notify-beep yes
+always-display-description true
+
+article-sort-order date-desc
+cleanup-on-quit yes
+display-article-progress yes
+goto-first-unread yes
+goto-next-feed no
+# notify-program notify-send
+# notify-always yes
+# notify-format "newsbeuter: finished reload, %f unread feeds (%n unread articles total)"
+delete-read-articles-on-quit no
+
+#Custom Bindings
+bind-key e open-in-browser-and-mark-read
+
+# vimlike bindings
+unbind-key ^B
+bind-key ^B pageup
+unbind-key ^F
+bind-key ^F pagedown
+bind-key k up
+bind-key j down
+unbind-key l
+bind-key l open
+bind-key q quit
+unbind-key d
+bind-key d delete-article
+save-path "~/.notes"
+unbind-key s
+macro s pipe-to save_article ; delete-article
+unbind-key a
+macro a pipe-to read_later ; delete-article
+macro d delete-article
+
+bind-key D mark-all-feeds-read
+bind-key m toggle-show-read-feeds
+unbind-key n
+bind-key n next-unread-feed
+unbind-key p
+bind-key p prev-unread-feed
+
+# Dark solarized color scheme for newsbeuter, based on
+# Ethan Schoonover's Solarized.
+#
+# In order to use this color scheme, you must first configure
+# your terminal emulator to use the Solarized palette.
+# See <http://ethanschoonover.com/solarized/> for more information.
+
+color background   	default default
+color listnormal   	default default
+color listfocus    	default black     
+color info         	black   default   
+color article      	default default
+color listfocus_unread	blue	black
+color listnormal_unread	blue	default
+
+# highlights
+highlight article "^(Title):.*$" blue default
+highlight article "^(Link):.*$" yellow default bold
+highlight article "^(Date):.*$" yellow default bold
+highlight article "https?://[^ ]+" green default
+highlight article "\\[image\\ [0-9]+\\]" green default
+
+urls-source "feedhq"
+feedhq-login "crez"
+feedhq-passwordfile ".newsbeuter/fhq"
+feedhq-show-special-feeds no

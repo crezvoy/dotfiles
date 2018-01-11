@@ -1,0 +1,112 @@
+# vim: ft=muttrc:
+
+# vim-like bindings
+
+bind index j next-entry
+bind index k previous-entry
+bind index J next-thread
+bind index K previous-thread
+
+# bind index / search
+# bind index ? search-reverse
+bind index n search-next
+bind index N search-opposite
+
+bind index g noop
+bind index gg first-entry
+bind index G last-entry
+
+bind index \Cd half-down
+bind index \Cu half-up
+
+bind index l collapse-thread
+bind index z collapse-all
+
+bind index h limit
+
+# Always start with threads collapsed and with the most recent thread selected
+push <collapse-all><last-entry>
+
+# Pager
+
+bind pager j next-line
+bind pager k previous-line
+
+bind pager <down> next-line
+bind pager <up>   previous-line
+
+bind pager n search-next
+bind pager N search-opposite
+
+bind pager g noop
+bind pager gg top
+bind pager G bottom
+
+bind pager \Cd half-down
+bind pager \Cu half-up
+
+bind index,pager R reply
+bind index,pager \CR group-reply
+bind index,pager L list-reply
+bind index,pager F  forward-message
+
+# '?' is used for search-opposite
+bind index,pager \Ch help
+
+
+
+# Gmail-like bindings
+bind  editor <space> noop
+bind  index,pager @  mail 		# Compose
+bind  generic     x  tag-entry		# Select Conversation
+bind  index       x  tag-thread		# Select Conversation
+bind  index,pager E  group-reply	# Reply all
+bind  index,pager A  view-attachments   # view-attachements
+bind  index,pager R  reply		# Reply to sender
+bind  index,pager \# delete-thread	# Delete
+bind  index,pager l  copy-message	# Label
+bind  index,pager v  save-message	# Move to
+
+macro index,pager a  "<save-message>$mbox<enter>"       " Archive the message"
+macro index,pager s  "<save-message>$my_saved<enter>" " Star the message"
+macro index,pager i  "<save-message>$my_inbox<enter>"   " Move the message to inbox"
+macro index,pager d  "<save-message>$trash<enter>"      " Delete the message"
+macro index,pager !  "<save-message>$spam<enter>"       " Mark the message as spam"
+macro index,pager I  "<set-flag>O"                      "Mark as read"
+macro index,pager U  "<clear-flag>Or"                   "Mark as unread"
+
+macro index,pager ga  "<change-folder>$mbox<enter><refresh>"       "Go to archive"
+macro index,pager gs  "<change-folder>$my_saved<enter><refresh>"  "Go to starred"
+macro index,pager gi  "<change-folder>$spoolfile<enter><refresh>"  "Go to inbox"
+macro index,pager gS  "<change-folder>$sent<enter><refresh>"       "Go to sent"
+macro index,pager gt  "<change-folder>$trash<enter><refresh>"      "Go to trash"
+macro index /        "<vfolder-from-query>"             " notmuch query"
+bind  compose     p  postpone-message   # save draft
+bind  index       p  recall-message     # recall draft
+# folder-hook "$spoolfile" 'macro index,pager y "<save-message>$mbox<enter>" "Archive conversation"'
+# folder-hook "$trash" 'macro index,pager y <save-message>$spoolfile<enter> "Move to inbox"'
+# folder-hook "$my_starred" 'bind  index,pager y flag-message' #"Toggle star"
+
+# Other bindings
+bind attach <return> view-mailcap
+macro attach s <save-entry><bol>~/Downloads/<eol>
+bind index \t sync-mailbox
+bind index <space>  collapse-thread
+bind index <return>  display-message
+bind editor <tab> complete-query
+bind editor \t complete
+bind editor <space> noop
+bind index \\ limit
+
+# Sidebar
+bind index,pager \Ck sidebar-prev
+bind index,pager \Cj sidebar-next
+bind index,pager \Cl sidebar-open
+macro index b '<enter-command>toggle sidebar_visible<enter>' "Show sidebar"
+macro pager b '<enter-command>toggle sidebar_visible<enter>' "Show sidebar"
+
+macro generic <F5> "!offlineimap -o<enter>" "Refresh mail"
+
+
+macro index,pager \cb "<pipe-message> urlview<Enter>" "call urlscan to extract URLs out of a message"
+macro attach,compose \cb "<pipe-entry> urlview<Enter>" "call urlscan to extract URLs out of a message"

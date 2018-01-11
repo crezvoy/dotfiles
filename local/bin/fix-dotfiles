@@ -1,0 +1,57 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Env qw($HOME);
+use File::Basename;
+
+my @folders = (
+	"$HOME/.cache",
+	"$HOME/.cache/mutt/tmp",
+	"$HOME/.cache/mutt/cache",
+	"$HOME/.cache/goobook",
+	"$HOME/.cache/goobook",
+	"$HOME/.cache/goobook"
+);
+
+foreach (@folders) {
+	if (not -e $_) {
+		mkdir $_;
+	}
+}
+
+sub process_file {
+	my $tpl_folder = shift;
+	my $target = shift;
+
+	mkdir $target if (not -d $target);
+	opendir(my $dir, $tpl_folder);
+	my @files = grep { not /^\..?$/ and not /\.git\// } readdir $dir;
+	for (@files) {
+		chomp;
+		my $filename = $_;
+		print "$_\n";
+		my $fpath = join("/", $tpl_folder, $filename);
+		if (-d $fpath) {
+			mkdir join("/", $target, $filename);
+			opendir(my $subdir, $fpath);
+			push(@files, map { join("/",  $filename, $_) } grep { not /^\..?$/ } readdir($subdir));
+			closedir($subdir);
+		}
+		open my $infile, "<$fpath";
+		my @content = map { s,~/,$HOME/,g; $_ } <$infile>;
+		close $infile;
+		open my $outfile, ">" . join("/", $target, $filename);
+		print $outfile $_ for(@content);
+		close $outfile;
+	}
+
+}
+
+my $mailtplcfg = "$HOME/local/etc/skel";
+my $mailcfg = "$HOME";
+
+process_file "$HOME/local/etc/skel" "$HOME"
+process_file "$HOME/local/etc/priv" "$HOME"
+

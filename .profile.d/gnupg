@@ -1,0 +1,8 @@
+#!/bin/sh
+
+unset GPG_AGENT_INFO
+unset SSH_AGENT_PID
+unset SSH_AUTH_SOCK
+gpg-connect-agent /bye
+export SSH_AUTH_SOCK="$(gpgconf --list-dir agent-ssh-socket)"
+

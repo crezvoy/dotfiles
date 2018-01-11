@@ -1,0 +1,22 @@
+
+# Images
+image/jpg; ~/local/bin/op %s; nametemplate=%s.jpg;
+image/jpeg; ~/local/bin/op %s; nametemplate=%s.jpg;
+image/pjpeg; ~/local/bin/op %s; nametemplate=%s.jpg;
+image/png; ~/local/bin/op  %s; nametemplate=%s.png;
+image/gif; ~/local/bin/op %s; nametemplate=%s.gif;
+
+# application/pdf; ~/bin/op %s; nametemplate=%s.pdf;
+
+application/*; ~/local/bin/op %s; nametemplate=%s;
+
+# HTML
+# #depends elinks
+text/html; elinks -dump -dump-charset utf-8 -default-mime-type text/htm %s; copiousoutput; compose=vim %s
+text/html; ~/local/bin/op %s; nametemplate=%s.html; 
+
+# Unidentified files
+application/octet-stream; ~/local/bin/op '%s';
+
+
+

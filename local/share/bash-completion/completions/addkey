@@ -1,0 +1,16 @@
+#!/bin/bash
+
+_addkey () {
+	COMPREPLY=()
+	local cur=${COMP_WORDS[COMP_CWORD]} 
+	local key=""
+	local keys=""
+	for key in $HOME/.ssh/id_rsa.*.pub; do
+		key=${key%%.pub}
+		key=${key##*.}
+		keys="$keys $key"
+	done
+	COMPREPLY=( $(compgen -W "$keys" -- $cur) )
+}
+
+complete -F _addkey addkey 

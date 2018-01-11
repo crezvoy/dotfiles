@@ -1,0 +1,7 @@
+#!/bin/bash
+
+perl -e '(shift @ARGV) =~
+	/#?([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})/ &&
+		printf "%d, %d, %d\n", hex($1), hex($2), hex($3)
+	' \
+	"${@}";

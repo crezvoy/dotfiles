@@ -1,0 +1,30 @@
+{
+	"extensions":
+	[
+		"cpp",
+		"cc",
+		"cxx",
+		"c++",
+		"hh",
+		"hpp",
+		"hxx",
+		"h++",
+		"inl",
+		"ipp",
+		"txx",
+		"cxx",
+		"hxx"
+	],
+	"auto_complete_triggers":
+	[
+		{
+			"characters": "."
+		},
+		{
+			"characters": "::"
+		},
+		{
+			"characters": "->"
+		}
+	]
+}

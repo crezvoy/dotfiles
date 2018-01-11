@@ -1,0 +1,3 @@
+#!/bin/bash
+
+perl -le 'print map { (a..z,A..Z,0..9)[rand 62] } 0..pop' 8

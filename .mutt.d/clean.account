@@ -1,0 +1,31 @@
+# vim: ft=muttrc:
+
+
+# restore copy when moving out of a gmail account.
+set copy
+
+unset certificate_file
+unset from
+unset header_cache
+unset imap_pass
+unset imap_user
+unset mbox
+unset message_cachedir
+unset my_spam
+unset my_starred
+unset my_waiting
+unset my_action
+unset my_reply
+unset postponed
+unset record
+unset signature
+unset smtp_pass
+unset smtp_url
+unset spoolfile
+unset trash
+
+unalias *
+
+unmailboxes *
+
+unvirtual-mailboxes *
